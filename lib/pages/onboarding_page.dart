@@ -4,6 +4,7 @@ import 'package:vulnerability_learn_app/pages/shared_onboarding_screen.dart';
 import 'package:vulnerability_learn_app/pages/user_data_page.dart';
 import 'package:vulnerability_learn_app/utils/colors.dart';
 import 'package:vulnerability_learn_app/widgets/custom_button.dart';
+import 'package:vulnerability_learn_app/pages/register_page.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -75,10 +76,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               )
                             : GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
+                                  Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => UserDataScreen(),
+                                      builder: (context) =>
+                                          const RegisterPage(),
                                     ),
                                   );
                                 },

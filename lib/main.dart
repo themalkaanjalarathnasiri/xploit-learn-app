@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:vulnerability_learn_app/pages/splash_screen.dart';
 
-void main() {
-  runApp(const VulnerabilityLearnApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  runApp(const XploitLearn());
 }
 
-class VulnerabilityLearnApp extends StatelessWidget {
-  const VulnerabilityLearnApp({super.key});
+class XploitLearn extends StatelessWidget {
+  const XploitLearn({super.key});
 
   @override
   Widget build(BuildContext context) {

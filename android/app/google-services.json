@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "882928689525",
+    "project_id": "xploit-learn",
+    "storage_bucket": "xploit-learn.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:882928689525:android:d8affeddb8f5b3ea15b33c",
+        "android_client_info": {
+          "package_name": "com.example.vulnerability_learn_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeAcL_9qW-2o6tMmq3tMHsPoy5H8oYYrs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:vulnerability_learn_app/pages/onboarding_page.dart';
+import 'package:vulnerability_learn_app/pages/home_page.dart';
 import 'package:vulnerability_learn_app/utils/colors.dart';
+import 'package:hive/hive.dart';
+import 'package:vulnerability_learn_app/pages/login_page.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -14,13 +17,25 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 5), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const OnboardingScreen(),
-        ),
-      );
+    Future.delayed(const Duration(seconds: 5), () async {
+      // Open the users box
+      final usersBox = await Hive.openBox('users');
+
+      // Check if any user is registered
+      if (usersBox.isNotEmpty) {
+        // Navigate to the home page
+        final email = usersBox.keys.first;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage(userEmail: email)),
+        );
+      } else {
+        // Navigate to the onboarding page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+        );
+      }
     });
   }
 
