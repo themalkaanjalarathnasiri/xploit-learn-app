@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:vulnerability_learn_app/pages/splash_screen.dart';
+import 'package:flutter/services.dart';
+import 'package:vulnerability_learn_app/pages/video_recommendation_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +18,7 @@ class XploitLearn extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Xploit Learn",
-      home: SplashScreen(),
+      home: const SplashScreen(),
     );
   }
 }

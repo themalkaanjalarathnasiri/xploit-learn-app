@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lab Recommender Test</title>
+  </head>
+  <body>
+    <h1>Test Lab Recommender API</h1>
+    <form action="http://127.0.0.1:5000/api/lab-recommendations" method="post">
+      <label for="skillLevel">Skill Level:</label><br />
+      <input
+        type="text"
+        id="skillLevel"
+        name="skillLevel"
+        value="Beginner"
+      /><br /><br />
+      <label for="topics">Topics (comma-separated):</label><br />
+      <input
+        type="text"
+        id="topics"
+        name="topics"
+        value="Web Security,Cryptography"
+      /><br /><br />
+      <input type="submit" value="Get Recommendations" />
+    </form>
+    <h2>API Response:</h2>
+    <textarea id="apiResponse" rows="10" cols="80"></textarea>
+    <script>
+      const form = document.querySelector("form");
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const skillLevel = document.getElementById("skillLevel").value;
+        const topics = document.getElementById("topics").value;
+        const response = await fetch(
+          "http://127.0.0.1:5000/api/lab-recommendations",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              skillLevel: skillLevel,
+              topics: topics.split(","),
+            }),
+          }
+        );
+        try {
+          const data = await response.json();
+          console.log("API Response:", data);
+          document.getElementById("apiResponse").value = JSON.stringify(
+            data,
+            null,
+            2
+          );
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -38,15 +38,19 @@ class _UserPreferencesScreenState extends State<UserPreferencesScreen> {
   }
 
   final List<String> _topics = [
-    "Web Security",
-    "Network Exploitation",
-    "Reverse Engineering",
-    "Malware Analysis",
-    "Cryptography",
-    "Mobile App Security",
-    "Security Operations",
-    "LLM Vulnerabilties",
-    "Binary Exploits",
+    "XSS",
+    "SQLi",
+    "Command Injection",
+    "LFI/RFI",
+    "Directory Traversal",
+    "SSRF",
+    "CSRF",
+    "IDOR"
+        "Broken Authentication",
+    "Insecure Deserialization",
+    "HTTP Response Splitting",
+    "Web Cache Poisoning",
+    "Broken Access Control",
   ];
   final List<String> _skillLevels = ["Beginner", "Intermediate", "Expert"];
   //final TextEditingController _emailController = TextEditingController();
@@ -60,12 +64,23 @@ class _UserPreferencesScreenState extends State<UserPreferencesScreen> {
       backgroundColor: kBlack,
       appBar: AppBar(
         backgroundColor: kBlack,
-        title: const Text(
-          "Customize Your Learning Path",
-          style: TextStyle(
-            color: kWhite,
-            fontWeight: FontWeight.bold,
-          ),
+        title: Column(
+          children: const [
+            Text(
+              "Customize Your",
+              style: TextStyle(
+                color: kWhite,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              "Learning Path",
+              style: TextStyle(
+                color: kWhite,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
         centerTitle: true,
       ),
@@ -88,7 +103,7 @@ class _UserPreferencesScreenState extends State<UserPreferencesScreen> {
               ),
               const SizedBox(height: 20),
               Wrap(
-                spacing: 8.0,
+                spacing: 2.0,
                 children: _topics.map((topic) {
                   return TopicButton(
                     topic: topic,
