@@ -5,6 +5,8 @@ import 'package:vulnerability_learn_app/pages/video_recommendation_screen.dart';
 import 'package:lottie/lottie.dart';
 import 'package:vulnerability_learn_app/utils/tips.dart';
 import 'package:vulnerability_learn_app/pages/assistant_screen.dart';
+import 'package:vulnerability_learn_app/pages/roadmap_page.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class HomePage extends StatefulWidget {
   final String userEmail;
@@ -17,6 +19,23 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String _currentTip = Tips.getRandomTip();
+  String _skillLevel = "Beginner";
+  List<String> _selectedTopics = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPreferences();
+  }
+
+  Future<void> _loadPreferences() async {
+    final preferencesBox = await Hive.openBox('preferences');
+    setState(() {
+      _skillLevel = (preferencesBox.get('skillLevel') ?? "Beginner") as String;
+      _selectedTopics = List<String>.from(
+          (preferencesBox.get('selectedTopics') ?? const []) as List);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +65,28 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
+                  builder: (context) => RoadmapPage(
+                      skillLevel: _skillLevel, selectedTopics: _selectedTopics),
+                ),
+              );
+            },
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: CircleAvatar(
+                backgroundColor: kGreen,
+                child: Icon(Icons.map_sharp, color: kBlack),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
                   builder: (context) => ProfilePage(
                     userEmail: widget.userEmail,
-                    skillLevel: "Beginner",
-                    selectedTopics: const [],
+                    skillLevel: _skillLevel,
+                    selectedTopics: _selectedTopics,
                   ),
                 ),
               );
@@ -61,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                 child: Icon(Icons.person, color: kBlack),
               ),
             ),
-          )
+          ),
         ],
       ),
       body: Stack(

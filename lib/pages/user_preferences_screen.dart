@@ -29,12 +29,16 @@ class UserPreferencesScreen extends StatefulWidget {
 class _UserPreferencesScreenState extends State<UserPreferencesScreen> {
   String _skillLevel = "";
   List<String> _selectedTopics = [];
+  bool _selectionsMade = false;
 
   @override
   void initState() {
     super.initState();
     _skillLevel = widget.selectedSkillLevel ?? "";
-    _selectedTopics = widget.selectedTopics ?? [];
+    _selectedTopics = widget.selectedTopics != null
+        ? List<String>.from(widget.selectedTopics!)
+        : [];
+    _selectionsMade = _skillLevel.isNotEmpty || _selectedTopics.isNotEmpty;
   }
 
   final List<String> _topics = [
@@ -45,8 +49,8 @@ class _UserPreferencesScreenState extends State<UserPreferencesScreen> {
     "Directory Traversal",
     "SSRF",
     "CSRF",
-    "IDOR"
-        "Broken Authentication",
+    "IDOR",
+    "Broken Authentication",
     "Insecure Deserialization",
     "HTTP Response Splitting",
     "Web Cache Poisoning",
@@ -115,6 +119,8 @@ class _UserPreferencesScreenState extends State<UserPreferencesScreen> {
                         } else {
                           _selectedTopics.add(topic);
                         }
+                        _selectionsMade = _skillLevel.isNotEmpty ||
+                            _selectedTopics.isNotEmpty;
                       });
                     },
                   );
@@ -139,6 +145,8 @@ class _UserPreferencesScreenState extends State<UserPreferencesScreen> {
                     onPressed: () {
                       setState(() {
                         _skillLevel = skillLevel;
+                        _selectionsMade = _skillLevel.isNotEmpty ||
+                            _selectedTopics.isNotEmpty;
                       });
                     },
                   );
@@ -148,9 +156,11 @@ class _UserPreferencesScreenState extends State<UserPreferencesScreen> {
                 height: MediaQuery.of(context).size.height * 0.18,
               ),
               GestureDetector(
-                onTap: () {
-                  _savePreferences();
-                },
+                onTap: _selectionsMade
+                    ? () {
+                        _savePreferences();
+                      }
+                    : null,
                 child: CustomButton(
                   buttonName: widget.isEditing ? 'Save' : 'Continue',
                   buttonColor: kGreen,
@@ -176,7 +186,9 @@ class _UserPreferencesScreenState extends State<UserPreferencesScreen> {
       // Open the preferences box
       final preferencesBox = await Hive.openBox('preferences');
 
-      // Set the hasSetPreferences flag to true
+      // Store the preferences
+      await preferencesBox.put('skillLevel', _skillLevel);
+      await preferencesBox.put('selectedTopics', _selectedTopics);
       await preferencesBox.put(widget.emailController.text, true);
 
       // Navigate to the home page
