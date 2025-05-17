@@ -88,8 +88,31 @@ class _RoadmapPageState extends State<RoadmapPage> {
     List<String> encodedRoadmap =
         _roadmapSteps.map((step) => jsonEncode(step)).toList();
     await prefs.setStringList('roadmap', encodedRoadmap);
+
     for (int i = 0; i < _completed.length; i++) {
       await prefs.setBool('step_$i', _completed[i]);
+    }
+
+    int lastCompletedIndex =
+        _completed.lastIndexWhere((element) => element == true);
+    int nextIncompleteIndex =
+        _completed.indexWhere((element) => element == false);
+
+    String? lastCompletedTitle = lastCompletedIndex != -1
+        ? _roadmapSteps[lastCompletedIndex]['title']
+        : null;
+
+    String? nextIncompleteTitle = nextIncompleteIndex != -1
+        ? _roadmapSteps[nextIncompleteIndex]['title']
+        : null;
+
+    await prefs.setInt('lastCompletedIndex', lastCompletedIndex);
+    await prefs.setInt('nextIncompleteIndex', nextIncompleteIndex);
+    if (lastCompletedTitle != null) {
+      await prefs.setString('lastCompletedTitle', lastCompletedTitle);
+    }
+    if (nextIncompleteTitle != null) {
+      await prefs.setString('nextIncompleteTitle', nextIncompleteTitle);
     }
   }
 

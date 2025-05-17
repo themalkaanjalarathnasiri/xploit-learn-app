@@ -40,22 +40,23 @@ class _ProfilePageState extends State<ProfilePage> {
     _loadProgress();
   }
 
-  Future<void> _loadProgress() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _lastCompletedStep = prefs.getInt('lastCompletedStep') ?? null;
-      _nextStep = prefs.getInt('nextStep') ?? null;
-    });
-  }
-
   Future<void> _loadPreferences() async {
     final preferencesBox = await Hive.openBox('preferences');
     setState(() {
       _skillLevel =
           (preferencesBox.get('skillLevel') ?? widget.skillLevel) as String;
       _selectedTopics = List<String>.from(
-          (preferencesBox.get('selectedTopics') ?? widget.selectedTopics)
-              as List);
+          preferencesBox.get('selectedTopics') ?? widget.selectedTopics);
+    });
+  }
+
+  Future<void> _loadProgress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _lastCompletedStep = prefs.getInt('lastCompletedStep');
+      _nextStep = prefs.getInt('nextStep');
+      _lastCompletedStepTitle = prefs.getString('lastCompletedStepTitle');
+      _nextStepTitle = prefs.getString('nextStepTitle');
     });
   }
 
@@ -82,9 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: const Text(
-            '',
-          ),
+          title: const Text(''),
           backgroundColor: Colors.transparent,
           elevation: 0,
         ),
@@ -93,7 +92,6 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Center(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Header Section
                 Column(
@@ -114,15 +112,27 @@ class _ProfilePageState extends State<ProfilePage> {
                       widget.userEmail,
                       style: const TextStyle(color: kWhite, fontSize: 20),
                     ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Skill Level: $_skillLevel',
+                      style: const TextStyle(color: kWhite, fontSize: 16),
+                    ),
+                    Text(
+                      'Topics: ${_selectedTopics.join(', ')}',
+                      style: const TextStyle(color: kWhite, fontSize: 16),
+                    ),
                   ],
                 ),
+
                 const SizedBox(height: 20),
+
+                // Edit Preferences
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Card(
                     color: kBlack.withOpacity(0.4),
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(color: kGreen, width: 1),
+                      side: const BorderSide(color: kGreen, width: 1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: ListTile(
@@ -137,8 +147,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               emailController:
                                   TextEditingController(text: widget.userEmail),
                               isEditing: true,
-                              selectedSkillLevel: widget.skillLevel,
-                              selectedTopics: widget.selectedTopics,
+                              selectedSkillLevel: _skillLevel,
+                              selectedTopics: _selectedTopics,
                             ),
                           ),
                         ) as Map<String, dynamic>?;
@@ -153,13 +163,16 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 10),
+
+                // Roadmap & Progress
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Card(
                     color: kBlack.withOpacity(0.4),
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(color: kGreen, width: 1),
+                      side: const BorderSide(color: kGreen, width: 1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: ListTile(
@@ -177,20 +190,26 @@ class _ProfilePageState extends State<ProfilePage> {
                                   lastCompletedStepTitle, nextStepTitle) async {
                                 SharedPreferences prefs =
                                     await SharedPreferences.getInstance();
-                                // Update the state of the ProfilePage
+
+                                // Save progress
+                                await prefs.setInt('lastCompletedStep',
+                                    lastCompletedStep ?? -1);
+                                await prefs.setInt('nextStep', nextStep ?? -1);
+                                await prefs.setString('lastCompletedStepTitle',
+                                    lastCompletedStepTitle ?? '');
+                                await prefs.setString(
+                                    'nextStepTitle', nextStepTitle ?? '');
+
                                 setState(() {
                                   _lastCompletedStep = lastCompletedStep;
                                   _nextStep = nextStep;
                                   _lastCompletedStepTitle =
                                       lastCompletedStepTitle;
                                   _nextStepTitle = nextStepTitle;
-                                  print(
-                                      'Last completed step: $_lastCompletedStep, Next step: $_nextStep, Last completed step title: $_lastCompletedStepTitle, Next step title: $_nextStepTitle');
+
+                                  debugPrint(
+                                      'Progress saved: $_lastCompletedStepTitle → $_nextStepTitle');
                                 });
-                                await prefs.setInt('lastCompletedStep',
-                                    lastCompletedStep ?? -1);
-                                await prefs.setInt('nextStep', nextStep ?? -1);
-                                await _loadProgress();
                               },
                             ),
                           ),
@@ -199,12 +218,16 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
+
+                const SizedBox(height: 10),
+
+                // Progress Display Card
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Card(
                     color: kBlack.withOpacity(0.4),
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(color: kGreen, width: 1),
+                      side: const BorderSide(color: kGreen, width: 1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
@@ -212,27 +235,27 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             'Last Completed Step:',
-                            style: const TextStyle(
+                            style: TextStyle(
                                 color: kWhite,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            '${_lastCompletedStepTitle ?? 'None'}',
+                            _lastCompletedStepTitle ?? 'None',
                             style: const TextStyle(color: kWhite, fontSize: 16),
                           ),
-                          SizedBox(height: 8),
-                          Text(
+                          const SizedBox(height: 8),
+                          const Text(
                             'Next Step:',
-                            style: const TextStyle(
+                            style: TextStyle(
                                 color: kWhite,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            '${_nextStepTitle ?? 'None'}',
+                            _nextStepTitle ?? 'None',
                             style: const TextStyle(color: kWhite, fontSize: 16),
                           ),
                         ],
@@ -240,9 +263,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                ),
+
+                const SizedBox(height: 20),
+
+                // Logout Button
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: GestureDetector(

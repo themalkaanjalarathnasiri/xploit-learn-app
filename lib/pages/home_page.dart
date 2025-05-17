@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vulnerability_learn_app/pages/lessons_page.dart';
+import 'package:vulnerability_learn_app/pages/lab_recommender_page.dart';
+import 'package:vulnerability_learn_app/services/gemini_service.dart';
 import 'package:vulnerability_learn_app/utils/colors.dart';
 import 'package:vulnerability_learn_app/pages/profile_page.dart';
 import 'package:vulnerability_learn_app/pages/video_recommendation_screen.dart';
@@ -11,21 +15,23 @@ import 'package:hive_flutter/hive_flutter.dart';
 class HomePage extends StatefulWidget {
   final String userEmail;
 
-  const HomePage({Key? key, required this.userEmail}) : super(key: key);
+  const HomePage({super.key, required this.userEmail});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  String _currentTip = Tips.getRandomTip();
-  String _skillLevel = "Beginner";
+  final String _currentTip = Tips.getRandomTip();
+  String _skillLevel = "";
   List<String> _selectedTopics = [];
+  int _nextIncompleteIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _loadPreferences();
+    _loadNextIncompleteIndex();
   }
 
   Future<void> _loadPreferences() async {
@@ -35,6 +41,14 @@ class _HomePageState extends State<HomePage> {
       _selectedTopics = List<String>.from(
           (preferencesBox.get('selectedTopics') ?? const []) as List);
     });
+  }
+
+  Future<void> _loadNextIncompleteIndex() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _nextIncompleteIndex = (prefs.getInt('nextIncompleteIndex') ?? 0);
+    });
+    print(_nextIncompleteIndex);
   }
 
   @override
@@ -142,26 +156,57 @@ class _HomePageState extends State<HomePage> {
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
                   children: [
-                    _buildFeatureCard(
-                      context,
-                      "🧪 Labs",
-                      "Start Practicing",
-                      "Hands-on vulnerability labs",
-                      () => print("Labs tapped"),
-                    ),
+                    _buildFeatureCard(context, "🧪 Labs", "Start Practicing",
+                        "Hands-on vulnerability labs", () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LabRecommenderPage(
+                            skillLevel: _skillLevel,
+                            selectedTopics: _selectedTopics,
+                          ),
+                        ),
+                      );
+                    }),
                     _buildFeatureCard(
                       context,
                       "📚 Tutorials",
                       "Learn Vulnerabilities",
                       "In-depth guides and writeups",
-                      () => print("Tutorials tapped"),
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LessonsPage(
+                            skillLevel: _skillLevel,
+                            selectedTopics: _selectedTopics,
+                          ),
+                        ),
+                      ),
                     ),
                     _buildFeatureCard(
                       context,
                       "📺 Videos",
                       "Watch & Learn",
                       "Curated videos by your topics",
-                      () => print("Videos tapped"),
+                      () async {
+                        final geminiService = GeminiService();
+                        final roadmap = await geminiService.getRoadmap(
+                            _skillLevel, _selectedTopics);
+                        if (roadmap.isNotEmpty) {
+                          final nextStepIndex = _nextIncompleteIndex;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => VideoRecommendationScreen(
+                                skillLevel: _skillLevel,
+                                selectedTopics: _selectedTopics,
+                                roadmap: roadmap,
+                                nextStepIndex: nextStepIndex,
+                              ),
+                            ),
+                          );
+                        }
+                      },
                     ),
                     _buildFeatureCard(
                       context,

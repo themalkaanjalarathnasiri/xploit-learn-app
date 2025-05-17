@@ -15,17 +15,16 @@ class TryHackMeScraper:
             response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
             soup = BeautifulSoup(response.content, "html.parser")
 
-            # Example: Extract all room titles
-            # room_titles = [room.text for room in soup.find_all("h3", class_="room-title")]
-            # print(room_titles)
-
             recommendations = []
-            # Placeholder logic - replace with actual scraping and filtering
-            recommendations.append({
-                "title": "TryHackMe Lab 1",
-                "description": "A beginner-friendly lab on TryHackMe.",
-                "source": "https://tryhackme.com/lab1"
-            })
+            for room in soup.find_all("div", class_="room-card"):
+                title = room.find("h3", class_="room-title").text.strip()
+                description = room.find("p", class_="room-description").text.strip()
+                source = "https://tryhackme.com" + room.find("a", class_="room-link")["href"]
+                recommendations.append({
+                    "title": title,
+                    "description": description,
+                    "source": source
+                })
 
             return recommendations[:3]  # Limit to top 3 results
 

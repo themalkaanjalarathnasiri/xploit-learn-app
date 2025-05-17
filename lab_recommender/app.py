@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from utils.scraper import MasterScraper
@@ -17,4 +21,4 @@ def lab_recommendations():
     return jsonify(recommendations)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

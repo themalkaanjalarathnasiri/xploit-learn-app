@@ -15,17 +15,16 @@ class PortSwiggerScraper:
             response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
             soup = BeautifulSoup(response.content, "html.parser")
 
-            # Example: Extract all lab titles
-            # lab_titles = [lab.text for lab in soup.find_all("h3", class_="lab-title")]
-            # print(lab_titles)
-
             recommendations = []
-            # Placeholder logic - replace with actual scraping and filtering
-            recommendations.append({
-                "title": "PortSwigger Lab 1",
-                "description": "A beginner-friendly lab on PortSwigger.",
-                "source": "https://portswigger.net/lab1"
-            })
+            for lab in soup.find_all("a", class_="card-item"):
+                title = lab.find("h4", class_="card-title").text.strip()
+                description = lab.find("p", class_="card-description").text.strip()
+                source = "https://portswigger.net" + lab["href"]
+                recommendations.append({
+                    "title": title,
+                    "description": description,
+                    "source": source
+                })
 
             return recommendations[:3]  # Limit to top 3 results
 

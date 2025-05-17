@@ -52,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
             // Gives more space to the main animation
             child: Center(
               child: Lottie.asset(
-                "assets/animation/Artboard 1.json",
+                "assets/animation/DH7tepTi2C.json",
                 width: screenWidth, // Responsive width
                 height: screenHeight, // Adjust height based on screen size
                 // fit: BoxFit.contain,

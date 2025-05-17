@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vulnerability_learn_app/utils/colors.dart';
 import '../models/video.dart';
 import '../services/gemini_service.dart';
 import '../services/youtube_service.dart';
@@ -7,9 +8,15 @@ import 'package:url_launcher/url_launcher.dart';
 class VideoRecommendationScreen extends StatefulWidget {
   final String skillLevel;
   final List<String> selectedTopics;
+  final List<Map<String, String>> roadmap;
+  final int nextStepIndex;
 
-  VideoRecommendationScreen(
-      {required this.skillLevel, required this.selectedTopics});
+  VideoRecommendationScreen({
+    required this.skillLevel,
+    required this.selectedTopics,
+    required this.roadmap,
+    required this.nextStepIndex,
+  });
 
   @override
   _VideoRecommendationScreenState createState() =>
@@ -20,7 +27,7 @@ class _VideoRecommendationScreenState extends State<VideoRecommendationScreen> {
   final GeminiService _geminiService = GeminiService();
   final YoutubeService _youtubeService = YoutubeService();
   List<Video> _videos = [];
-  bool _useMockData = true; // Optional: Mock Data Mode
+  bool _useMockData = false; // Optional: Mock Data Mode
 
   @override
   void initState() {
@@ -47,10 +54,9 @@ class _VideoRecommendationScreenState extends State<VideoRecommendationScreen> {
       });
     } else {
       // API calls
-      final prompt =
-          "I am a ${widget.skillLevel} in ${widget.selectedTopics.join(', ')}. I want YouTube video recommendations to further my knowledge.";
-      final queries = await _geminiService.generateSearchQueries(
-          widget.skillLevel, widget.selectedTopics);
+      final nextStep = widget.roadmap[widget.nextStepIndex]['title'] ?? "";
+      final queries = await _geminiService.generateSearchQueries(nextStep);
+      print(nextStep);
       final videos = await _youtubeService.getVideos(queries);
       setState(() {
         _videos = videos;
@@ -61,53 +67,99 @@ class _VideoRecommendationScreenState extends State<VideoRecommendationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kGreen,
       appBar: AppBar(
-        title: Text('Video Recommendations'),
+        backgroundColor: kGreen,
+        title: Text(
+          'Video Recommendations',
+          style: TextStyle(
+            color: kWhite,
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
       body: _videos.isEmpty
           ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: _videos.length,
-              itemBuilder: (context, index) {
-                final video = _videos[index];
-                return Card(
-                  child: InkWell(
-                    onTap: () async {
-                      final url =
-                          "https://www.youtube.com/watch?v=${video.videoId}";
-                      await launchUrl(Uri.parse(url));
-                    },
-                    child: Row(
-                      children: [
-                        Image.network(
-                          video.thumbnailUrl,
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  video.title,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  video.channel,
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+          : Column(
+              children: [
+                Center(
+                  child: Image.asset(
+                    "assets/images/montage.png",
+                    width: 100,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "These videos will help you completing next step.",
+                    style: TextStyle(
+                      color: kWhite,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                );
-              },
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _videos.length > 5 ? 5 : _videos.length,
+                    itemBuilder: (context, index) {
+                      final video = _videos[index];
+                      return InkWell(
+                        onTap: () async {
+                          final url =
+                              "https://www.youtube.com/watch?v=${video.videoId}";
+                          await launchUrl(Uri.parse(url));
+                        },
+                        child: Card(
+                          color: kBlack.withOpacity(0.5),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Image.network(
+                                video.thumbnailUrl,
+                                height: 200,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  video.title,
+                                  style: TextStyle(
+                                    color: kWhite,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text(
+                                  "https://www.youtube.com/watch?v=${video.videoId}",
+                                  style: TextStyle(
+                                      fontSize: 12, color: Colors.blue),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  video.channel,
+                                  style: TextStyle(
+                                    color: kWhite,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
     );
   }

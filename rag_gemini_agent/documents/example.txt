@@ -1,0 +1,1 @@
+This is an example document about vulnerabilities. It contains information about cross-site scripting (XSS) and SQL injection.

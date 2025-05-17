@@ -15,17 +15,16 @@ class HTBScraper:
             response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
             soup = BeautifulSoup(response.content, "html.parser")
 
-            # Example: Extract all challenge titles
-            # challenge_titles = [challenge.text for challenge in soup.find_all("h3", class_="challenge-title")]
-            # print(challenge_titles)
-
             recommendations = []
-            # Placeholder logic - replace with actual scraping and filtering
-            recommendations.append({
-                "title": "HackTheBox Lab 1",
-                "description": "A beginner-friendly lab on HackTheBox.",
-                "source": "https://hackthebox.com/lab1"
-            })
+            for challenge in soup.find_all("div", class_="col-xs-12 col-sm-6 col-md-4 col-lg-4"):
+                title = challenge.find("h3", class_="card-title").text.strip()
+                description = challenge.find("div", class_="card-text").text.strip()
+                source = "https://app.hackthebox.com" + challenge.find("a", class_="card-footer")["href"]
+                recommendations.append({
+                    "title": title,
+                    "description": description,
+                    "source": source
+                })
 
             return recommendations[:3]  # Limit to top 3 results
 
