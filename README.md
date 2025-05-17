@@ -1,6 +1,5 @@
 ![erasebg-transformed](https://github.com/user-attachments/assets/144c6cbc-3d5f-48ae-9d50-19fdd25ae4b8)
-
-# AI Integrated Mobile Learning App for Vulnerability Analysis
+# Xploit Learn - An AI Integrated Mobile Learning App for Vulnerability Analysis
 
 This project is an AI-powered mobile learning platform designed to teach users about vulnerability analysis in the context of cybersecurity. It leverages Google Gemini for personalized, context-aware lesson generation and integrates hands-on labs for practical learning. The app focuses on real-time feedback, personalized learning paths, and comprehensive cybersecurity training, helping users enhance their understanding of vulnerabilities and how to protect against them.
 
