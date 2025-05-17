@@ -106,3 +106,105 @@ ai_vulnerability_learning_app/
 
  └── pubspec.yaml # Flutter project dependencies 
 
+
+## Setup & Installation
+
+1. **Clone the repository**:
+
+    ```bash
+    git clone https://github.com/your-username/ai-vulnerability-learning-app.git
+    cd ai-vulnerability-learning-app
+    ```
+
+2. **Install dependencies**:
+
+    First, ensure you have **Flutter** installed. Then, install the required packages:
+
+    ```bash
+    flutter pub get
+    ```
+
+3. **Set up Gemini API**:
+
+    Create a `config.dart` file and insert your **Gemini API key**:
+
+    ```dart
+    // config.dart
+    const String GEMINI_API_KEY = "your-gemini-api-key";
+    ```
+
+4. **Run the app**:
+
+    You can now run the app on an **Android emulator** or a **physical Android device**:
+
+    ```bash
+    flutter run
+    ```
+
+    **Note**: Currently, this app supports **Android** only. If you need to run it on **iOS**, additional steps and modifications will be needed.
+
+## How It Works
+
+### **1. Roadmap Generation and User Preferences**
+
+- The app generates a **personalized roadmap** based on the user's **selected topics** and **skill level**. The roadmap is dynamically tailored for each user.
+- **User Preferences** (e.g., topics like XSS, SQLi) are stored locally in **Hive** and used to filter and recommend relevant lessons and labs.
+
+### **2. Gemini API Integration for Lessons**
+
+- The **Gemini Service** generates lessons based on the user’s **last completed roadmap step** and the **next step**.
+- Each lesson is created by sending a prompt to the **Gemini API**:
+- The generated lesson includes explanations, examples, and additional resources.
+
+### **3. Lab Recommendations**
+
+- The app fetches **vulnerability labs** based on the user’s preferences. These labs are sourced via a **web scraper** that pulls hands-on exercises from trusted platforms.
+- The **Lab Recommendation Page** presents a list of available labs filtered by the user’s learning path and skill level.
+
+### **4. AI Assistant**
+
+- The **AI Assistant** uses the **Gemini API** to answer user questions about vulnerabilities. The assistant provides contextual, real-time answers based on the user’s roadmap and selected preferences.
+- The assistant is powered by **RAG (Retrieval-Augmented Generation)**, ensuring the answers are both relevant and personalized.
+
+### **5. Progress Tracking**
+
+- The app tracks the user’s progress through lessons and labs. Each completed lesson or lab is marked and synced across the **Profile Page** and **Roadmap**.
+- A **progress tracker** provides a visual overview of the user’s journey, showing the number of steps completed and what’s next.
+
+## Example User Interaction
+
+1. **Roadmap**:  
+ - User opens the app and sees a personalized roadmap based on their skill level and selected topics.
+ - The roadmap consists of a list of **lesson cards**, each representing a specific vulnerability topic.
+
+2. **Lesson Generation**:  
+ - The user taps on a lesson card, and the Gemini API generates a detailed lesson for that specific roadmap step.
+
+3. **Lab Recommendations**:  
+ - The user is recommended relevant **labs** for hands-on practice, filtered based on the roadmap topics and their skill level.
+
+4. **AI Assistant**:  
+ - The user asks the AI assistant about a specific vulnerability (e.g., "How do I prevent SQL Injection?").
+ - The assistant generates a response based on the current roadmap step and provides additional resources.
+
+## Contributing
+
+We welcome contributions to improve the app. To get started:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-name`).
+3. Make your changes and test thoroughly.
+4. Submit a pull request for review.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### **Future Enhancements**:
+- Add video tutorials or embedded video lessons from platforms like YouTube.
+- Implement interactive quizzes at the end of each lesson to test knowledge.
+- Enhance AI capabilities to include code walkthroughs and hands-on lab simulations.
+
+---
+
+This **README.md** file now reflects **Android-only support** while providing clear instructions on how to set up and run the app. Let me know if you need further refinements!
