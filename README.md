@@ -44,5 +44,65 @@ This project is an AI-powered mobile learning platform designed to teach users a
 ---
 
 ## 📁 Folder Structure
+ai_vulnerability_learning_app/ 
 
+ ├── android/ # Android-specific code for Flutter 
+
+ ├── lib/ 
+
+ │ ├── app.dart # Main entry point of the app 
+
+ │ ├── screens/ 
+
+ │ │ ├── home_screen.dart # Home page with roadmap and progress 
+
+ │ │ ├── lesson_screen.dart # Displays detailed lesson content 
+
+ │ │ ├── lab_recommendation.dart # Lab recommendation page 
+
+ │ │ └── assistant_screen.dart # AI assistant for user queries 
+
+ │ ├── widgets/ 
+
+ │ │ ├── lesson_card.dart # Card component for displaying lessons 
+
+ │ │ ├── lab_card.dart # Card component for displaying labs 
+
+ │ │ └── progress_tracker.dart # Widget for tracking user progress 
+
+ │ ├── models/ 
+
+ │ │ ├── lesson_model.dart # Data model for lessons 
+
+ │ │ ├── lab_model.dart # Data model for labs 
+
+ │ │ └── user_model.dart # Data model for user preferences and progress 
+
+ │ ├── services/ 
+
+ │ │ ├── gemini_service.dart # Handles communication with Gemini API 
+
+ │ │ ├── lab_service.dart # Fetches and processes lab recommendations 
+
+ │ │ └── preference_service.dart # Manages user preferences and skill levels 
+
+ │ ├── utils/ 
+
+ │ │ └── constants.dart # App-wide constants (e.g., colors, API URLs) 
+
+ │ └── config.dart # App configuration (e.g., API keys, Firebase setup) 
+
+ ├── assets/ # Image, icons, and other assets 
+
+ │ ├── images/ 
+
+ │ ├── icons/ 
+
+ │ └── documents/ # Documents for lessons (e.g., markdown files, text) 
+
+ ├── test/ # Unit tests and widget tests 
+
+ │ └── gemini_service_test.dart # Test cases for Gemini service 
+
+ └── pubspec.yaml # Flutter project dependencies 
 
