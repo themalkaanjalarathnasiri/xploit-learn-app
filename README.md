@@ -1,1 +1,1 @@
-![Github Readme Photo](https://github.com/user-attachments/assets/267cdf75-1ed6-4872-be7b-22266d50faf6)
+![Github Readme Photo](https://github.com/user-attachments/assets/59c4d447-3696-4380-af13-713dd2bf6177)
